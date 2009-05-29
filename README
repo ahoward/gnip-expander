@@ -1,0 +1,69 @@
+NAME
+  gnip-expander
+
+SYNOPSIS
+  gnip-expander [mode] [options]+
+
+DESCRIPTION
+  gnip-expander relays an existing gnip publisher's activites and
+  re-publishers a stream with all http/https links published in a shortened
+  form (bit.ly, etc) normalized to their long form.
+  
+  gnip-expander attempts to setup a keyword filter on the src publisher but
+  does not require the publisher to support keyword filters - if the
+  publisher does the entire stream is relayed.
+  
+  like all gnip.rb client code gnip-expander expects to find your gnip
+  account info configured in ~/.gnip.yml in a file that looks like
+  
+    username: gnip-username
+    password: gnip-password
+  
+  although you can pass this information in using the command line switches
+  of course.
+  
+  gnip-expander keeps track of successfully relayed buckets in a directory
+  (~/.gnip-expander by default).  although you can pass in the starting
+  point with the --timestamp switch gnip-expander is quite good at doing
+  'the right thing' with respect to which buckets to process.  in general it
+  simply processes all unprocessed buckets as quickly as possible and then
+  proceeds to process any new bucket as it appears, polling only when all
+  buckets are processed and new ones have yet to appear.
+
+PARAMETERS
+  mode (1 ~> mode) 
+      one of start|stop|restart|pid for daemon control. all imply --daemon. 
+  --timestamp=timestamp, -t (0 ~> time(timestamp)) 
+      timestamp to begin relaying activites from 
+  --gnip-username=gnip-username (0 ~> gnip-username) 
+      you gnip username - default from ~/gnip.yml 
+  --gnip-password=gnip-password (0 ~> gnip-password) 
+      you gnip password - default from ~/gnip.yml 
+  --src-publisher=src-publisher (0 ~> src-publisher=twitter) 
+      publisher whose posts we want to expand 
+  --daemon, -D 
+      run continuously in the background 
+  --timeout=timeout (0 ~> integer(timeout=60)) 
+      polling interval in daemon mode 
+  --basedir=basedir (0 ~> basedir=/Users/ahoward/.gnip-expander) 
+      base directory for logs, config, pidfile, etc. 
+  --verbosity=verbosity, -v (0 ~> verbosity=info) 
+      one of debug(4)|info(3)|warn(2)|error(1)|fatal(0) 
+  --help, -h 
+
+EXAMPLES
+  . run at the console in verbose mode
+      gnip-expander -v4
+  
+  . run in the background in daemon mode
+      gnip-expander start && tail -F ~/.gnip-expander/log
+  
+  . stop a background daemon
+      gnip-expander stop
+  
+  . restart a background daemon
+      gnip-expander restart
+  
+  . report the pid of the background daemon or currently running gnip-expander
+      gnip-expander pid
+
